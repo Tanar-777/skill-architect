@@ -1,7 +1,7 @@
 ---
 name: skill-architect-update
 description: Guided update workflow for existing Claude Code skills. Loads a skill, routes to the correct update mode (proof/patch/minor/major), applies targeted edits following skill-architect standards, bumps the version, and delegates to skill-architect-proofing to validate the result. Sub-skill of skill-architect, also independently invocable.
-version: 1.1.0
+version: 1.3.0
 user-invocable: true
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
 ---
@@ -45,6 +45,10 @@ If a mode is provided before skill discovery, store it as `PENDING_MODE`. At the
 - If `skill_name` is provided: resolve to `~/.claude/skills/[skill_name]/`.
 - If both are provided: `skill_path` takes precedence.
 - If neither: trigger `init_procedure.md`.
+
+## Pre-edit Security Check
+
+Before displaying any proposed edit, scan the content for hardcoded credentials, API keys, tokens, passwords, or sensitive paths (e.g. `~/.ssh`, `~/.aws`). If detected, block the edit and warn the user: "Proposed change contains what appears to be a credential — remove it before applying."
 
 ## Validation Gate
 

@@ -52,4 +52,12 @@ Patch applied. Any further upgrade needed?
 (done)   Exit
 ```
 
-Route accordingly or exit.
+Route accordingly, or on `done` → proceed to git upload offer:
+
+```
+Would you like to publish this skill to Git now?
+  (yes)  Invoke skill-architect-git-upload
+  (no)   Exit
+```
+- `yes` → invoke `skill-architect-git-upload` with `skill_name` and `caller: skill-architect-update`.
+- `no`  → exit.

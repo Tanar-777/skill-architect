@@ -74,6 +74,12 @@ Proceed? [yes / change / cancel]
 ## Per-skill flow
 
 For each skill in `SELECTED_SKILLS`, the caller runs the full procedure chain independently:
+
+**0. Proofing Gate (mandatory — see SKILL.md `## Proofing Gate`)**
+- Read `~/.claude/skills/[skill_name]/proofing-report.md`
+- Apply block/warn/pass rules before any further step
+- If blocked and user cancels → skip this skill, offer to continue with remaining
+
 1. `resolve_repo_procedure.md`
 2. `branch_procedure.md`
 3. `sync_check_procedure.md`

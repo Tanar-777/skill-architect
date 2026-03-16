@@ -88,7 +88,7 @@ if __name__ == "__main__":
 ## STEP 6 — Final Critique & Generation (END)
 
 - Perform a final self-critique of the complete architecture:
-  - Security flaws?
+  - Security flaws? (hardcoded credentials, API keys, tokens, passwords, or personal config paths?)
   - Risk of infinite loops?
   - Context leaks?
   - Edge cases unhandled?

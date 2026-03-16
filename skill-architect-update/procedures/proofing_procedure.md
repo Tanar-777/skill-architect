@@ -63,4 +63,12 @@ Update complete. Any further upgrade needed?
 - `minor`    → load `procedures/minor_procedure.md`
 - `major`    → load `procedures/major_procedure.md`
 - `re-proof` → return to Step 3 (increment re-proof counter)
-- `done`     → exit
+- `done`     → proceed to git upload offer:
+
+```
+Would you like to publish this skill to Git now?
+  (yes)  Invoke skill-architect-git-upload
+  (no)   Exit
+```
+- `yes` → invoke `skill-architect-git-upload` with `skill_name` and `caller: skill-architect-update`.
+- `no`  → exit.
