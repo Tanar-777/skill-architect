@@ -1,0 +1,23 @@
+{
+  "name": "skill-architect-update",
+  "description": "Guided update workflow for existing Claude Code skills.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "skill_path": {
+        "type": "string",
+        "description": "Direct path to the skill directory to update. Takes precedence over skill_name."
+      },
+      "skill_name": {
+        "type": "string",
+        "description": "Skill name to resolve under ~/.claude/skills/. Ignored if skill_path is provided."
+      },
+      "mode": {
+        "type": "string",
+        "enum": ["proof", "patch", "minor", "major"],
+        "description": "Update mode. proof=audit and fix (default), patch=small targeted fix, minor=new feature or section, major=architectural rewrite."
+      }
+    },
+    "required": []
+  }
+}

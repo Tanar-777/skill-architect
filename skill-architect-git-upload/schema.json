@@ -1,0 +1,28 @@
+{
+  "name": "skill-architect-git-upload",
+  "description": "Upload a local Claude Code skill to a remote Git repository.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "mode": {
+        "type": "string",
+        "enum": ["init", "check", "push", "standalone"],
+        "description": "Operating mode. 'init' runs/reruns setup. 'check' verifies sync state (no push). 'push' runs the full upload flow. 'standalone' (default) applies current config."
+      },
+      "repo_url": {
+        "type": "string",
+        "description": "Explicit upload repository URL. Takes precedence over all saved config."
+      },
+      "skill_name": {
+        "type": "string",
+        "description": "Target skill to upload. If omitted in standalone mode, a selection checklist runs. Pre-set when called from skill-architect."
+      },
+      "caller": {
+        "type": "string",
+        "enum": ["skill-architect", "standalone"],
+        "description": "Calling context. 'skill-architect' skips skill selection and uses skill_name directly. 'standalone' shows the full selection checklist."
+      }
+    },
+    "required": []
+  }
+}
