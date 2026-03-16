@@ -70,10 +70,19 @@ If confirmed:
   - `yes` → load `procedures/patch_procedure.md` with the current `skill_path`.
   - `no` → proceed to Step 7.
 
-## Step 7 — Final summary
+## Step 7 — Final summary and git upload offer
 
 Display:
 - New version
 - Files modified or created
 - Proofing badge status (✅ ready / ⚠️ warnings / ❌ failures)
 - "Major update complete."
+
+Then ask:
+```
+Would you like to publish this skill to Git now?
+  (yes)  Invoke skill-architect-git-upload
+  (no)   Exit
+```
+- `yes` → invoke `skill-architect-git-upload` with `skill_name` and `caller: skill-architect-update`.
+- `no`  → exit.

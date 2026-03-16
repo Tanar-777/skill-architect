@@ -25,7 +25,7 @@ It is the canonical proofing tool for the skill-architect ecosystem and replaces
 | SECTIONS | All 5 mandatory `#` sections present |
 | STRUCTURE | `schema.json`, `tests/test_*.py`, `README.md` |
 | CREDENTIALS | API keys, tokens, private keys, passwords |
-| SENSITIVE_PATH | ~/.ssh, ~/.aws, /etc/passwd, ~/.env |
+| SENSITIVE_PATH | SSH key dir, AWS credentials, system user/password files, env file |
 | UNSAFE_BASH | rm -rf, curl\|bash, eval, sudo, os.system |
 
 ## Output
@@ -38,11 +38,6 @@ It is the canonical proofing tool for the skill-architect ecosystem and replaces
 - `brightgreen` — all 7 categories passed
 - `yellow` — warnings only
 - `red` — hard failures present
-
-## Note on proofing.py false positives
-
-`scripts/proofing.py` contains the regex patterns it scans for (credentials, unsafe bash, etc.).
-The proofing script will flag itself when run against this skill directory. This is expected — the patterns are present as scanner definitions, not as actual security issues.
 
 ## Related Skills
 

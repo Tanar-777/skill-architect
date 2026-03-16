@@ -1,7 +1,7 @@
 ---
 name: skill-architect-git-upload
 description: Upload a local Claude Code skill to a remote Git repository. Handles branch safety, repo resolution via shared config with git-load, sync verification, commit generation, and push. Integrates with skill-architect, skill-architect-proofing, and skill-architect-update.
-version: 1.0.0
+version: 1.1.0
 user-invocable: true
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
 ---
@@ -24,6 +24,31 @@ You are a sub-skill of `skill-architect` but can be invoked independently as `/s
 6. Respect caller context — single-skill when called by skill-architect, checklist when standalone.
 
 # STRICT INSTRUCTIONS
+
+## Proofing Gate
+
+Before any skill proceeds to repo resolution, check its proofing state:
+
+1. Look for `~/.claude/skills/[skill_name]/proofing-report.md`.
+2. Apply the following rules:
+
+| State | Action |
+|---|---|
+| `proofing-report.md` missing | **Block.** Display: `⛔ '[skill_name]' has never been proofed. Run /skill-architect-proofing first.` Offer: `[run proofing now / skip (not recommended) / cancel]` |
+| Report contains `❌` | **Block.** Display failures from the report. Offer: `[fix via /skill-architect-update / skip (not recommended) / cancel]` |
+| Report contains `⚠️` only | **Warn.** Display: `⚠️ '[skill_name]' has proofing warnings. Upload anyway? [yes / cancel]` |
+| Report is all `✅` | **Pass silently.** Proceed to repo resolution. |
+
+- `skip (not recommended)` requires the user to type `SKIP` in uppercase to confirm — non-default, friction-inducing.
+- This gate runs per-skill, before `resolve_repo_procedure.md`.
+
+## Upload Exclusions
+
+The following files must **never** be staged or pushed to the remote repo:
+- `proofing-report.md` — local audit artifact, not part of the skill source
+- `CHANGELOG.md` — local change history, managed locally only
+
+These are excluded at the copy step in `upload_procedure.md`. No exception.
 
 ## Git Enabled Gate
 

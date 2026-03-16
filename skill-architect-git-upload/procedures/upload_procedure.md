@@ -28,8 +28,10 @@ Copy all files from `~/.claude/skills/[skill_name]/` to the resolved destination
 cp -r ~/.claude/skills/[skill_name]/. [temp_dir]/[skill_destination]/
 ```
 
-Exclude:
-- `.git/` — never copy git metadata
+Exclude (hard — never copy, no exception):
+- `.git/` — git metadata
+- `proofing-report.md` — local audit artifact, not part of the skill source
+- `CHANGELOG.md` — local change history, managed locally only
 - Any file matching `.env`, `*.key`, `*.pem` — warn and skip:
   ```
   ⚠️  Skipping '[filename]' — potential credentials file. Upload anyway? [yes / skip]

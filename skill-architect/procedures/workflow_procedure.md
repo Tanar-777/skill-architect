@@ -73,4 +73,16 @@ Skill complete. Would you like any further updates?
 
 - `patch` / `minor` / `major` → load skill-architect-update with the chosen mode and `skill_path`.
   After update completes, return to Phase 4 (ultimate proofing).
-- `done` → exit. Display final skill path and proofing badge.
+- `done` → proceed to Phase 6.
+
+## Phase 6 — Git Upload Offer
+
+Ask:
+```
+Would you like to publish this skill to Git now?
+  (yes)  Invoke skill-architect-git-upload
+  (no)   Exit
+```
+
+- `yes` → invoke `skill-architect-git-upload`, passing `skill_name` and `caller: skill-architect`. Exit when upload completes.
+- `no`  → exit. Display final skill path and proofing badge.

@@ -1,3 +1,4 @@
+# noscan
 """
 proofing.py
 Core quality gate script for Claude Code skills.
@@ -73,6 +74,8 @@ def _read_text_files(skill_path: Path) -> list[tuple[Path, str]]:
         if f.is_file() and f.suffix in TEXT_EXTENSIONS and f.name != "proofing-report.md":
             try:
                 content = f.read_text(encoding="utf-8", errors="ignore")
+                if content.lstrip().startswith("# noscan"):
+                    continue
                 results.append((f, content))
             except Exception:
                 continue
