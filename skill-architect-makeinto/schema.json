@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "skill-architect-makeinto",
+  "description": "Converts an existing file or code repository into a Claude Code skill.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "input_path": {
+        "type": "string",
+        "description": "Absolute or relative path to the source file or directory to convert into a skill."
+      },
+      "mode": {
+        "type": "string",
+        "enum": ["auto", "single", "multi"],
+        "default": "auto",
+        "description": "Scope mode. 'auto' detects automatically. 'single' forces one skill. 'multi' forces skill tree."
+      },
+      "skill_name": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,64}$",
+        "description": "Optional override for the inferred skill name. Must be lowercase with hyphens only."
+      },
+      "output_dir": {
+        "type": "string",
+        "description": "Optional override for the output root directory. Defaults to ~/.claude/skills/"
+      }
+    },
+    "required": ["input_path"]
+  }
+}
