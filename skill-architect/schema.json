@@ -1,0 +1,9 @@
+{
+  "name": "skill-architect",
+  "description": "No required parameters — the skill idea is provided conversationally during Step 1.",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}

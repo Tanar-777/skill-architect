@@ -1,0 +1,12 @@
+{
+  "name": "skill-architect-proofing",
+  "description": "Quality gate for Claude Code skills. Audits structure, metadata, security, and sharing readiness.",
+  "version": "1.0.0",
+  "parameters": {
+    "skill_path": {
+      "type": "string",
+      "description": "Path to the skill directory to proof. If omitted, triggers interactive discovery.",
+      "required": false
+    }
+  }
+}
