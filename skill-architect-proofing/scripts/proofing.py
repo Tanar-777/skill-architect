@@ -5,6 +5,7 @@ Core quality gate script for Claude Code skills.
 Runs a full checklist on a skill directory and writes proofing-report.md.
 """
 
+import sys
 import re
 import json
 from pathlib import Path
@@ -303,4 +304,8 @@ def test_run():
 
 
 if __name__ == "__main__":
-    test_run()
+    sys.stdout.reconfigure(encoding='utf-8')
+    if len(sys.argv) > 1:
+        print(run(sys.argv[1]))
+    else:
+        test_run()

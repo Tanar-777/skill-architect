@@ -1,7 +1,7 @@
 ---
 name: skill-architect-proofing
 description: Quality gate for Claude Code skills. Audits a skill directory against a standard checklist — versioning, allowed-tools, schema, mandatory sections, tests, security, and Git sharing readiness. Writes a proofing-report.md with badge to the skill directory. Sub-skill of skill-architect, also independently invocable.
-version: 1.0.1
+version: 1.0.2
 user-invocable: true
 allowed-tools: [Read, Write, Glob, Grep, Bash]
 ---
