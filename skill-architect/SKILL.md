@@ -1,8 +1,8 @@
 ---
 name: skill-architect
-description: Parent skill of the skill-architect suite. Runs the 6-step design protocol and orchestrates 5 sub-skills — skill-architect-proofing, skill-architect-update, skill-architect-git-load, skill-architect-git-upload, and skill-architect-makeinto.
+description: Parent skill of the skill-architect suite. Runs the 6-step design protocol and orchestrates 8 sub-skills — skill-architect-brainstorm, skill-architect-proofing, skill-architect-update, skill-architect-git-load, skill-architect-git-upload, skill-architect-makeinto, skill-architect-multy-plan, and skill-architect-multy-exec.
 user-invocable: true
-version: 5.3.0
+version: 6.0.0
 allowed-tools: [Read, Write, Glob, Grep, Bash, WebSearch]
 ---
 
@@ -18,14 +18,17 @@ You are the **parent skill** of the `skill-architect` suite. All sub-skills belo
 
 ```
 skill-architect                      ← parent skill (YOU ARE HERE)
+├── skill-architect-brainstorm       — pre-design brainstorm; intent, trade-offs, edge cases
 ├── skill-architect-proofing         — quality gate; audits any skill directory
 ├── skill-architect-update           — guided update workflow (patch / minor / major)
 ├── skill-architect-git-load         — load / update skills from a remote Git repo
 ├── skill-architect-git-upload       — publish skills to a remote Git repo
-└── skill-architect-makeinto         — convert existing files or repos into a skill
+├── skill-architect-makeinto         — convert existing files or repos into a skill
+├── skill-architect-multy-plan       — plan a suite of skills; outputs [suite]-plan.md
+└── skill-architect-multy-exec       — execute a plan.md; drives skill-architect per skill
 ```
 
-`skill-architect` orchestrates all five sub-skills across the full skill lifecycle. Each sub-skill is independently invocable and can be used without invoking the parent.
+`skill-architect` orchestrates all eight sub-skills across the full skill lifecycle. Each sub-skill is independently invocable and can be used without invoking the parent.
 
 # OBJECTIVES
 
@@ -47,13 +50,56 @@ skill-architect                      ← parent skill (YOU ARE HERE)
 
 ## Sub-skill Paths
 
+- Brainstorm sub-skill:  `~/.claude/skills/skill-architect-brainstorm/`
 - Proofing sub-skill:    `~/.claude/skills/skill-architect-proofing/`
 - Update sub-skill:      `~/.claude/skills/skill-architect-update/`
 - Git load sub-skill:    `~/.claude/skills/skill-architect-git-load/`
 - Git upload sub-skill:  `~/.claude/skills/skill-architect-git-upload/`
 - Makeinto sub-skill:    `~/.claude/skills/skill-architect-makeinto/`
+- Multy plan sub-skill:  `~/.claude/skills/skill-architect-multy-plan/`
+- Multy exec sub-skill:  `~/.claude/skills/skill-architect-multy-exec/`
 
-Check all five exist at startup. If any is missing, warn the user — the full workflow cannot run but the 6-step design protocol can still proceed.
+Check all eight exist at startup. If any is missing, warn the user — the full workflow cannot run but the 6-step design protocol can still proceed.
+
+## Brainstorm Entry Point Rule
+
+`skill-architect-brainstorm` is **not triggered by default**. It runs only when one of the following conditions is met:
+
+| Trigger | Condition | Action |
+|---|---|---|
+| **Explicit argument** | `-brainstorm` passed by user | Always run brainstorm before Step 1 (intent mode) |
+| **Agent-estimated complexity** | Step 1/2 analysis identifies 2+ major edge cases OR 3+ important trade-offs with architectural implications | Pause and offer brainstorm before continuing to Step 2 |
+
+Once brainstorm completes in a session, set a session flag — suppress all subsequent triggers for that session.
+
+**Complexity threshold definition:** A trade-off or edge case qualifies as "major" if it could materially affect the skill's architecture, data strategy, integration points, or output format — not minor implementation details.
+
+**Invoking brainstorm:**
+- Load `~/.claude/skills/skill-architect-brainstorm/SKILL.md`
+- Pass `caller: skill-architect` and `mode: intent`
+- On return, inject the structured summary as prefill context into Step 1
+
+If `skill-architect-brainstorm` is missing: warn the user and skip — do not block the design protocol.
+
+## Multi-Skill Delegation Rule (Step 2)
+
+During Step 2 (Tooling & Architecture), if the analysis identifies **3 or more distinct scripts or logical units**, pause and inform the user:
+> "This project looks like it needs multiple skills. I recommend delegating to `skill-architect-multy-plan` to design the full suite before generating any individual skill."
+
+Ask: "Delegate to skill-architect-multy-plan? [yes / continue-as-single / cancel]"
+- `yes` → load `~/.claude/skills/skill-architect-multy-plan/SKILL.md` and pass prefill context:
+  ```json
+  {
+    "prefill": {
+      "name_candidate": "[proposed skill name from Step 1]",
+      "idea": "[skill idea from Step 1]",
+      "step1_notes": "[key notes from Step 1 critique]"
+    }
+  }
+  ```
+  Exit the current 6-step protocol — `skill-architect-multy-plan` takes over.
+- `continue-as-single` → resume Step 2 as normal.
+- `cancel` → exit.
 
 ## Git Load Integration (Step 1)
 
@@ -106,7 +152,7 @@ If any item is missing — fill it in before writing:
 
 ## Security Rule
 
-Never hardcode API keys, tokens, passwords, secrets, or personal config paths (e.g. `~/.ssh`, `~/.aws`) in any generated skill file. If the skill design requires external credentials, always instruct use of environment variables or a user-managed config file — never inline values. If the user provides a credential during the design session, do not write it into any generated file.
+Never hardcode API keys, tokens, passwords, secrets, or personal config paths (e.g. SSH key directories, cloud credential directories) in any generated skill file. If the skill design requires external credentials, always instruct use of environment variables or a user-managed config file — never inline values. If the user provides a credential during the design session, do not write it into any generated file.
 
 ## Post-generation Lifecycle
 
@@ -142,6 +188,7 @@ Phase 6 — Git upload offer          (skill-architect-git-upload, optional)
 
 ## Start
 
-1. Check that all five sub-skills are installed (`skill-architect-proofing`, `skill-architect-update`, `skill-architect-git-load`, `skill-architect-git-upload`, `skill-architect-makeinto`). Warn for any that are missing.
-2. Read `process.md` to load the 6-step protocol.
-3. Begin with Step 1: ask the user for their skill idea.
+1. Check that all eight sub-skills are installed (`skill-architect-brainstorm`, `skill-architect-proofing`, `skill-architect-update`, `skill-architect-git-load`, `skill-architect-git-upload`, `skill-architect-makeinto`, `skill-architect-multy-plan`, `skill-architect-multy-exec`). Warn for any that are missing.
+2. If `-brainstorm` argument provided: load `skill-architect-brainstorm` (intent mode) before reading `process.md`.
+3. Read `process.md` to load the 6-step protocol.
+4. Begin with Step 1: ask the user for their skill idea.
