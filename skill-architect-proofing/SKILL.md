@@ -1,7 +1,7 @@
 ---
 name: skill-architect-proofing
 description: Quality gate for Claude Code skills. Audits a skill directory against a standard checklist — versioning, allowed-tools, schema, mandatory sections, tests, security, and Git sharing readiness. Writes a proofing-report.md with badge to the skill directory. Sub-skill of skill-architect, also independently invocable.
-version: 1.0.2
+version: 1.1.0
 user-invocable: true
 allowed-tools: [Read, Write, Glob, Grep, Bash]
 ---
@@ -46,9 +46,18 @@ Once the skill path is resolved:
 5. If only ⚠️ Warnings or ℹ️ Info: state **"This skill can be shared but improvements are recommended."**
 6. If all ✅ passed: state **"This skill is ready to share on Git."**
 
+## Code Testing Trigger
+
+After the proofing report is written, check for the presence of Python code files:
+- Use Glob to check for `scripts/*.py` OR `tests/test_*.py` in `[skill_path]/`.
+- **If Python files found:** Check that `~/.claude/skills/skill-architect-tester/SKILL.md` exists.
+  - If found: automatically invoke `skill-architect-tester` with `skill_path` and `caller: skill-architect-proofing`. Display the `code-test-report.md` result below the proofing report.
+  - If missing: add a note to the proofing report: "⚠️ `skill-architect-tester` not installed — Python code present but not executed."
+- **If no Python files found:** skip silently. (`test_skill.md` and other `.md` stubs are behavioural specs, not executable code.)
+
 ## RULES
 
-- Never edit, delete, or modify any file in the skill directory except `proofing-report.md`.
+- Never edit, delete, or modify any file in the skill directory except `proofing-report.md` and `code-test-report.md` (written by tester).
 - Never auto-fix issues — report only, let the user decide.
 - Always run the full checklist, never skip a category.
 
