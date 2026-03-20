@@ -7,8 +7,22 @@ create → proof → update → validate → ultimate proof → done cycle.
 
 1. Run `skill-architect-proofing` on the output directory (Branch 1 — pass `skill_path` directly).
 2. Display the full ❌/⚠️/ℹ️/✅ report.
-3. If all ✅ → skip to Phase 3 (Validation).
-4. If ❌ failures or ⚠️ warnings → proceed to Phase 2.
+3. If all ✅ → proceed to Phase 1.5.
+4. If ❌ failures or ⚠️ warnings → proceed to Phase 2 first, then Phase 1.5 after fixes.
+
+## Phase 1.5 — Code Testing (conditional)
+
+**Trigger condition:** Use Glob to check if any `scripts/*.py` OR `tests/test_*.py` files exist in `[skill_path]/`. If none found: skip this phase silently (agent-only test stubs like `test_skill.md` are handled by proofing, not here).
+
+If Python code files are present:
+1. Check that `~/.claude/skills/skill-architect-tester/SKILL.md` exists. If not: warn and skip.
+2. Run `skill-architect-tester` on the output directory with `caller: workflow`.
+3. Display the `code-test-report.md` badge and summary.
+4. If ❌ tests failed: surface failures and ask:
+   "Tests failed. Fix these issues now? [yes / skip]"
+   - `yes` → load `skill-architect-update` (patch mode) with `skill_path`. Re-run tester after fixes.
+   - `skip` → proceed to Phase 3 with current state.
+5. If ✅ or ⚠️ → proceed to Phase 3.
 
 ## Phase 2 — Update Loop (proof → fix → re-proof)
 

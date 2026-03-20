@@ -1,8 +1,8 @@
 ---
 name: skill-architect
-description: Parent skill of the skill-architect suite. Runs the 6-step design protocol and orchestrates 8 sub-skills — skill-architect-brainstorm, skill-architect-proofing, skill-architect-update, skill-architect-git-load, skill-architect-git-upload, skill-architect-makeinto, skill-architect-multy-plan, and skill-architect-multy-exec.
+description: Parent skill of the skill-architect suite. Runs the 6-step design protocol and orchestrates 9 sub-skills — skill-architect-brainstorm, skill-architect-proofing, skill-architect-tester, skill-architect-update, skill-architect-git-load, skill-architect-git-upload, skill-architect-makeinto, skill-architect-multy-plan, and skill-architect-multy-exec.
 user-invocable: true
-version: 6.0.0
+version: 7.0.0
 allowed-tools: [Read, Write, Glob, Grep, Bash, WebSearch]
 ---
 
@@ -20,6 +20,7 @@ You are the **parent skill** of the `skill-architect` suite. All sub-skills belo
 skill-architect                      ← parent skill (YOU ARE HERE)
 ├── skill-architect-brainstorm       — pre-design brainstorm; intent, trade-offs, edge cases
 ├── skill-architect-proofing         — quality gate; audits any skill directory
+├── skill-architect-tester           — code execution gate; runs pytest and scripts in real time
 ├── skill-architect-update           — guided update workflow (patch / minor / major)
 ├── skill-architect-git-load         — load / update skills from a remote Git repo
 ├── skill-architect-git-upload       — publish skills to a remote Git repo
@@ -52,6 +53,7 @@ skill-architect                      ← parent skill (YOU ARE HERE)
 
 - Brainstorm sub-skill:  `~/.claude/skills/skill-architect-brainstorm/`
 - Proofing sub-skill:    `~/.claude/skills/skill-architect-proofing/`
+- Tester sub-skill:      `~/.claude/skills/skill-architect-tester/`
 - Update sub-skill:      `~/.claude/skills/skill-architect-update/`
 - Git load sub-skill:    `~/.claude/skills/skill-architect-git-load/`
 - Git upload sub-skill:  `~/.claude/skills/skill-architect-git-upload/`
@@ -59,7 +61,7 @@ skill-architect                      ← parent skill (YOU ARE HERE)
 - Multy plan sub-skill:  `~/.claude/skills/skill-architect-multy-plan/`
 - Multy exec sub-skill:  `~/.claude/skills/skill-architect-multy-exec/`
 
-Check all eight exist at startup. If any is missing, warn the user — the full workflow cannot run but the 6-step design protocol can still proceed.
+Check all nine exist at startup. If any is missing, warn the user — the full workflow cannot run but the 6-step design protocol can still proceed.
 
 ## Brainstorm Entry Point Rule
 
@@ -159,12 +161,13 @@ Never hardcode API keys, tokens, passwords, secrets, or personal config paths (e
 After all files are written, load and follow `procedures/workflow_procedure.md`:
 
 ```
-Phase 1 — Initial proofing          (skill-architect-proofing, Branch 1)
-Phase 2 — Update loop if needed     (skill-architect-update, proof mode → re-proof)
-Phase 3 — User validation           (explicit confirm: does skill match intent?)
-Phase 4 — Ultimate proofing         (skill-architect-proofing, Branch 1, final run)
-Phase 5 — Post-completion offer     (further patch/minor/major updates if wanted)
-Phase 6 — Git upload offer          (skill-architect-git-upload, optional)
+Phase 1   — Initial proofing          (skill-architect-proofing, Branch 1)
+Phase 1.5 — Code testing              (skill-architect-tester, if tests/ or scripts/ present)
+Phase 2   — Update loop if needed     (skill-architect-update, proof mode → re-proof)
+Phase 3   — User validation           (explicit confirm: does skill match intent?)
+Phase 4   — Ultimate proofing         (skill-architect-proofing, Branch 1, final run)
+Phase 5   — Post-completion offer     (further patch/minor/major updates if wanted)
+Phase 6   — Git upload offer          (skill-architect-git-upload, optional)
 ```
 
 # AVAILABLE TOOLS
@@ -188,7 +191,7 @@ Phase 6 — Git upload offer          (skill-architect-git-upload, optional)
 
 ## Start
 
-1. Check that all eight sub-skills are installed (`skill-architect-brainstorm`, `skill-architect-proofing`, `skill-architect-update`, `skill-architect-git-load`, `skill-architect-git-upload`, `skill-architect-makeinto`, `skill-architect-multy-plan`, `skill-architect-multy-exec`). Warn for any that are missing.
+1. Check that all nine sub-skills are installed (`skill-architect-brainstorm`, `skill-architect-proofing`, `skill-architect-tester`, `skill-architect-update`, `skill-architect-git-load`, `skill-architect-git-upload`, `skill-architect-makeinto`, `skill-architect-multy-plan`, `skill-architect-multy-exec`). Warn for any that are missing.
 2. If `-brainstorm` argument provided: load `skill-architect-brainstorm` (intent mode) before reading `process.md`.
 3. Read `process.md` to load the 6-step protocol.
 4. Begin with Step 1: ask the user for their skill idea.
