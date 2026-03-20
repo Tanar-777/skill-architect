@@ -1,0 +1,31 @@
+{
+  "name": "skill-architect-multy-plan",
+  "description": "Creates a structured multi-skill suite plan. Accepts an optional reference file or gathers input conversationally. Outputs a [suite-name]-plan.md consumed by skill-architect-multy-exec.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "reference_file": {
+        "type": "string",
+        "description": "Optional path to a reference file (Markdown, text, or JSON) describing the skill suite."
+      },
+      "output_path": {
+        "type": "string",
+        "description": "Directory where the plan file will be saved. Defaults to current working directory."
+      },
+      "suite_name": {
+        "type": "string",
+        "description": "Override the inferred suite name. Must be lowercase, hyphens only, max 64 chars."
+      },
+      "prefill": {
+        "type": "object",
+        "description": "Pre-fill context passed from skill-architect when delegating (name_candidate, idea, step1_notes).",
+        "properties": {
+          "name_candidate": { "type": "string" },
+          "idea": { "type": "string" },
+          "step1_notes": { "type": "string" }
+        }
+      }
+    },
+    "required": []
+  }
+}
