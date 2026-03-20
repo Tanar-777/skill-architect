@@ -2,6 +2,22 @@
 
 ---
 
+## STEP 0 — Brainstorm (OPTIONAL — argument-triggered only)
+
+> Only run this step if `-brainstorm` was passed as an argument. Skip entirely otherwise.
+
+- Load `~/.claude/skills/skill-architect-brainstorm/SKILL.md`.
+- Pass `caller: skill-architect` and `mode: intent`.
+- Run the full brainstorm protocol (6 blocks).
+- On return, inject the structured brainstorm summary as prefill context into Step 1.
+- Set session brainstorm flag — do not trigger brainstorm again this session.
+
+If `skill-architect-brainstorm` is missing: warn the user and proceed directly to Step 1.
+
+> **Brainstorm completes → proceed immediately to Step 1 with context injected.**
+
+---
+
 ## STEP 1 — Definition, Critique & Research (MANDATORY PAUSE)
 
 - **Action 1:** Ask the user for their skill idea.
@@ -13,6 +29,10 @@
   - Output rendering format
 - **Action 4:** If the task is complex, list prerequisites or information/tests needed before committing to the design.
 - **Action 5:** Propose a definitive skill name (lowercase, hyphens only, max 64 chars) and a clear description (max 1024 chars).
+- **Action 6 (Complexity Check):** If the analysis above has identified **2 or more major edge cases** OR **3 or more important trade-offs** with architectural implications — AND the brainstorm session flag is not set — pause and offer:
+  > "This skill has significant complexity. Run brainstorm mode before continuing? [yes / skip]"
+  - `yes` → load `skill-architect-brainstorm` (`caller: skill-architect`, `mode: intent`), inject result as context, set session flag, then continue to Step 2.
+  - `skip` → proceed to Step 2 directly.
 
 > **STOP — Wait for explicit user validation before proceeding.**
 
