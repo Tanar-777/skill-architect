@@ -1,7 +1,7 @@
 ---
 name: skill-architect-update
 description: Guided update workflow for existing Claude Code skills. Loads a skill, routes to the correct update mode (proof/patch/minor/major), applies targeted edits following skill-architect standards, bumps the version, and delegates to skill-architect-proofing to validate the result. Sub-skill of skill-architect, also independently invocable.
-version: 1.3.0
+version: 1.4.0
 user-invocable: true
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
 ---
@@ -73,6 +73,15 @@ Do not reimplement git logic here — delegate entirely.
 ## Version Field Rule
 
 If the target skill's `SKILL.md` has no `version:` field in its frontmatter, insert `version: 1.0.0` before applying any other edit.
+
+## Model Field Rule
+
+If the target skill's `SKILL.md` has no `model:` field in its frontmatter, surface this to the user before applying any other edit:
+
+> "This skill has no `model:` field. Recommend adding one (`haiku` / `sonnet` / `opus`). See `~/.claude/skills/skill-architect/references/model-allocation.md` for the decision framework."
+
+- If the user confirms → insert the chosen value and proceed.
+- If the user skips → proceed without adding it (do not block the update).
 
 # AVAILABLE TOOLS
 
