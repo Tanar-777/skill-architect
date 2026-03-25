@@ -3,12 +3,30 @@
 This procedure runs after Step 6 file generation is complete. It orchestrates the full
 create → proof → update → validate → ultimate proof → done cycle.
 
+## Resume
+
+If a session was interrupted mid-workflow, ask: "Which phase did we stop at? (1 / 1.5 / 2 / 3 / 3.5 / 4 / 5 / 6)" — then resume from that phase. If uncertain, restart from Phase 1 (proofing is idempotent).
+
 ## Phase 1 — Initial Proofing
 
 1. Run `skill-architect-proofing` on the output directory (Branch 1 — pass `skill_path` directly).
 2. Display the full ❌/⚠️/ℹ️/✅ report.
-3. If all ✅ → skip to Phase 3 (Validation).
-4. If ❌ failures or ⚠️ warnings → proceed to Phase 2.
+3. If all ✅ → proceed to Phase 1.5.
+4. If ❌ failures or ⚠️ warnings → proceed to Phase 2 first, then Phase 1.5 after fixes.
+
+## Phase 1.5 — Code Testing (conditional)
+
+**Trigger condition:** Use Glob to check if any `scripts/*.py` OR `tests/test_*.py` files exist in `[skill_path]/`. If none found: skip this phase silently (agent-only test stubs like `test_skill.md` are handled by proofing, not here).
+
+If Python code files are present:
+1. Check that `~/.claude/skills/skill-architect-tester/SKILL.md` exists. If not: warn and skip.
+2. Run `skill-architect-tester` on the output directory with `caller: workflow`.
+3. Display the `code-test-report.md` badge and summary.
+4. If ❌ tests failed: surface failures and ask:
+   "Tests failed. Fix these issues now? [yes / skip]"
+   - `yes` → load `skill-architect-update` (patch mode) with `skill_path`. Re-run tester after fixes.
+   - `skip` → proceed to Phase 3 with current state.
+5. If ✅ or ⚠️ → proceed to Phase 3.
 
 ## Phase 2 — Update Loop (proof → fix → re-proof)
 
@@ -50,6 +68,22 @@ Confirm? [yes / no — needs changes]
 - `yes` → proceed to Phase 4.
 - `no — needs changes` → ask what needs changing, then load the appropriate
   skill-architect-update mode (patch/minor/major) and loop back to Phase 1 after changes.
+
+## Phase 3.5 — Behavioral Trial (optional)
+
+Ask:
+```
+Would you like to run the skill on a real example before final proofing?
+This catches behavioral issues that static checks cannot detect.
+  (yes)   Invoke the skill now on a real task
+  (skip)  Proceed to final proofing
+```
+
+- `yes` → Ask the user for a real example input, then invoke the skill on it. After the trial:
+  - Ask: "Did the skill behave as expected? [yes / no — needs changes]"
+  - `yes` → proceed to Phase 4.
+  - `no — needs changes` → load `skill-architect-update` (patch or minor mode) and return to Phase 3.5 after fixes.
+- `skip` → proceed to Phase 4 directly.
 
 ## Phase 4 — Ultimate Proofing
 

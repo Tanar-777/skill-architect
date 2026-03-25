@@ -51,6 +51,7 @@ After Step 6, `skill-architect-proofing` is automatically invoked on the output 
 ## Related Skills
 
 - [`skill-architect-proofing`](../skill-architect-proofing/) — quality gate, automatically invoked after generation
+- [`skill-architect-tester`](../skill-architect-tester/) — code execution gate; runs pytest and scripts in real time when Python files are present
 - [`skill-architect-update`](../skill-architect-update/) — update and maintain existing skills
 - [`skill-architect-git-load`](../skill-architect-git-load/) — load/update skills from a remote repository
 - [`skill-architect-git-upload`](../skill-architect-git-upload/) — upload skills to a remote repository
